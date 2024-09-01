@@ -46,7 +46,7 @@ const SignupForm = () => {
         </p>
 
         <form onSubmit={form.handleSubmit(onSubmit)} 
-          
+          className="flex flex-col w-full gap-5 mt-4"
         >
           <FormField
             control={form.control}
