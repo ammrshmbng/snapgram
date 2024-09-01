@@ -38,27 +38,35 @@ const SignupForm = () => {
     <Form {...form}>
       <div className="flex-col sm:w-420 flex-center">
         <img src="/assets/images/logo.svg" alt="logo" />
-      </div>
+        <h2 className="pt-5 h3-bold md:h2-bold sm:pt-12">
+          Create a new account
+        </h2>
+        <p className="mt-2 text-light-3 small-medium md:base-regular">
+          To use snapgram, Please enter your details
+        </p>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="shadcn" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-      </form>
+        <form onSubmit={form.handleSubmit(onSubmit)} 
+          
+        >
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder="shadcn" {...field} />
+                </FormControl>
+                <FormDescription>
+                  This is your public display name.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Submit</Button>
+        </form>
+      </div>
     </Form>
   );
 };
