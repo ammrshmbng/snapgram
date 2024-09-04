@@ -21,6 +21,9 @@ import { FileUploader, Loader } from "../shared";
 import { useNavigate } from "react-router-dom";
 import { PostValidation } from "@/lib/validation";
 import { Models } from "appwrite";
+import { useToast } from "@/hooks/use-toast";
+import { useUserContext } from "@/context/AuthContext";
+import { useCreatePost } from "@/lib/react-query/queries";
 
 type PostFormProps = {
   post?: Models.Document;
@@ -29,7 +32,17 @@ type PostFormProps = {
 
 
 const PostForm = ({ post, action }: PostFormProps) => {
+  const { toast } = useToast();
+  const { user } = useUserContext();
   const navigate = useNavigate();
+
+  
+  // Query
+  const { mutateAsync: createPost, isPending: isLoadingCreate } =
+    useCreatePost();
+
+
+    
   // 1. Define your form.
   const form = useForm<z.infer<typeof PostValidation>>({
     resolver: zodResolver(PostValidation),
@@ -42,11 +55,23 @@ const PostForm = ({ post, action }: PostFormProps) => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof PostValidation>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+ async function onSubmit(value: z.infer<typeof PostValidation>) {
+    // ACTION = CREATE
+    const newPost = await createPost({
+      ...value,
+      userId: user.id,
+    });
+
+    if (!newPost) {
+      toast({
+        title: `${action} post failed. Please try again.`,
+      });
+    }
+    navigate("/");
   }
+
+
+  
 
   return (
     <Form {...form}>
