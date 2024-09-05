@@ -1,6 +1,6 @@
 import { checkIsLiked } from "@/lib/utils";
 import { Models } from "appwrite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   useLikePost,
@@ -42,6 +42,10 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
     savePost({ userId: userId, postId: post.$id });
     setIsSaved(true);
   };
+
+  useEffect(() => {
+    setIsSaved(!!savedPostRecord);
+  }, [currentUser]);
 
   const handleLikePost = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
