@@ -3,7 +3,7 @@ import GridPostList from "@/components/shared/GridPostList";
 import { Input } from "@/components/ui";
 import useDebounce from "@/hooks/useDebounce";
 import { useGetPosts, useSearchPosts } from "@/lib/react-query/queries";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 
@@ -38,6 +38,12 @@ const Explore = () => {
   const { data: searchedPosts, isFetching: isSearchFetching } = useSearchPosts(debouncedSearch);
   const shouldShowPosts = !shouldShowSearchResults && 
     posts?.pages.every((item) => item.documents.length === 0);
+
+    useEffect(() => {
+      if (inView && !searchValue) {
+        fetchNextPage();
+      }
+    }, [inView, searchValue]);
 
 
   return (
