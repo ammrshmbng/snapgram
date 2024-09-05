@@ -17,13 +17,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
-import { FileUploader, Loader } from "../shared";
+import { FileUploader} from "../shared";
 import { useNavigate } from "react-router-dom";
 import { PostValidation } from "@/lib/validation";
 import { Models } from "appwrite";
 import { useToast } from "@/hooks/use-toast";
 import { useUserContext } from "@/context/AuthContext";
-import { useCreatePost } from "@/lib/react-query/queries";
+import { useCreatePost, useUpdatePost } from "@/lib/react-query/queries";
 
 type PostFormProps = {
   post?: Models.Document;
@@ -40,7 +40,8 @@ const PostForm = ({ post, action }: PostFormProps) => {
   // Query
   const { mutateAsync: createPost, isPending: isLoadingCreate } =
     useCreatePost();
-
+    const { mutateAsync: updatePost, isPending: isLoadingUpdate } =
+    useUpdatePost();
 
     
   // 1. Define your form.
@@ -56,6 +57,21 @@ const PostForm = ({ post, action }: PostFormProps) => {
 
   // 2. Define a submit handler.
  async function onSubmit(value: z.infer<typeof PostValidation>) {
+  if (post && action === "Update") {
+    const updatedPost = await updatePost({
+      ...value,
+      postId: post.$id,
+      imageId: post.imageId,
+      imageUrl: post.imageUrl,
+    });
+
+    if (!updatedPost) {
+      toast({
+        title: `${action} post failed. Please try again.`,
+      });
+    }
+    return navigate(`/posts/${post.$id}`);
+  }
     // ACTION = CREATE
     const newPost = await createPost({
       ...value,
