@@ -2,6 +2,7 @@ import {
   useQuery,
   useMutation,
   useQueryClient,
+  useInfiniteQuery,
 } from "@tanstack/react-query";
 import {
   createPost,
@@ -9,10 +10,12 @@ import {
   deleteFile,
   deleteSavedPost,
   getCurrentUser,
+  getInfinitePosts,
   getPostById,
   getRecentPosts,
   likePost,
   savePost,
+  searchPosts,
   signInAccount,
   signOutAccount,
   updatePost,
@@ -39,7 +42,6 @@ export const useSignOutAccount = () => {
     mutationFn: signOutAccount,
   });
 };
-
 
 export const useCreatePost = () => {
   const queryClient = useQueryClient();
@@ -79,7 +81,6 @@ export const useSavePost = () => {
   });
 };
 
-
 // ============================================================
 // USER QUERIES
 // ============================================================
@@ -90,7 +91,6 @@ export const useGetCurrentUser = () => {
     queryFn: getCurrentUser,
   });
 };
-
 
 export const useDeleteSavedPost = () => {
   const queryClient = useQueryClient();
@@ -188,5 +188,46 @@ export const useDeletePost = () => {
         queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
       });
     },
+  });
+};
+
+export const useSearchPosts = (searchTerm: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.SEARCH_POSTS, searchTerm],
+    queryFn: () => searchPosts(searchTerm),
+    enabled: !!searchTerm,
+  });
+};
+
+// export const useGetPosts = () => {
+//   return useInfiniteQuery({
+//     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
+//     queryFn: getInfinitePosts as any,
+//     getNextPageParam: (lastPage: any) => {
+//       // If there's no data, there are no more pages.
+//       if (lastPage && lastPage.documents.length === 0) {
+//         return null;
+//       }
+
+//       // Use the $id of the last document as the cursor.
+//       const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
+//       return lastId;
+//     },
+//   });
+// };
+
+export const useGetPosts = () => {
+  return useInfiniteQuery({
+    queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
+    queryFn: getInfinitePosts as any,
+    getNextPageParam: (lastPage: any) => {
+      if (!lastPage || lastPage.documents.length === 0) {
+        return null;
+      }
+
+      const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
+      return lastId;
+    },
+    initialPageParam: null, // Set initialPageParam to null
   });
 };

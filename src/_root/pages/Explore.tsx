@@ -1,8 +1,40 @@
+import { Loader } from "@/components/shared";
+import GridPostList from "@/components/shared/GridPostList";
 import { Input } from "@/components/ui";
+import useDebounce from "@/hooks/useDebounce";
+import { useGetPosts, useSearchPosts } from "@/lib/react-query/queries";
 import { useState } from "react";
+
+
+export type SearchResultProps = {
+  isSearchFetching: boolean;
+  searchedPosts: any;
+};
+
+const SearchResults = ({ isSearchFetching, searchedPosts }: SearchResultProps) => {
+  if (isSearchFetching) {
+    return <Loader />;
+  } else if (searchedPosts && searchedPosts.documents.length > 0) {
+    return <GridPostList posts={searchedPosts.documents} />;
+  } else {
+    return (
+      <p className="w-full mt-10 text-center text-light-4">No results found</p>
+    );
+  }
+};
 
 const Explore = () => {
   const [searchValue, setSearchValue] = useState("");
+  const debouncedSearch = useDebounce(searchValue, 500);
+  const { data: posts, fetchNextPage, hasNextPage } = useGetPosts();
+
+
+
+  const shouldShowSearchResults = searchValue !== "";
+  const { data: searchedPosts, isFetching: isSearchFetching } = useSearchPosts(debouncedSearch);
+  const shouldShowPosts = !shouldShowSearchResults && 
+    posts?.pages.every((item) => item.documents.length === 0);
+
 
   return (
     <div className="explore-container">
@@ -40,6 +72,21 @@ const Explore = () => {
             alt="filter"
           />
         </div>
+      </div>
+
+      <div className="flex flex-wrap w-full max-w-5xl gap-9">
+        {shouldShowSearchResults ? (
+          <SearchResults
+            isSearchFetching={isSearchFetching}
+            searchedPosts={searchedPosts}
+          />
+        ) : shouldShowPosts ? (
+          <p className="w-full mt-10 text-center text-light-4">End of posts</p>
+        ) : (
+          posts?.pages.map((item, index) => (
+            <GridPostList key={`page-${index}`} posts={item.documents} />
+          ))
+        )}
       </div>
     </div>
   );
