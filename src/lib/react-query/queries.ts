@@ -6,6 +6,7 @@ import {
 import {
   createPost,
   createUserAccount,
+  deleteFile,
   deleteSavedPost,
   getCurrentUser,
   getPostById,
@@ -18,6 +19,7 @@ import {
 } from "../appwrite/api";
 import { INewPost, INewUser, IUpdatePost } from "@/types";
 import { QUERY_KEYS } from "./queryKeys";
+import { appwriteConfig, databases } from "../appwrite/config";
 
 export const useCreateUserAccount = () => {
   return useMutation({
@@ -154,3 +156,24 @@ export const useUpdatePost = () => {
     },
   });
 };
+
+// ============================== DELETE POST
+export async function deletePost(postId?: string, imageId?: string) {
+  if (!postId || !imageId) return;
+
+  try {
+    const statusCode = await databases.deleteDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      postId
+    );
+
+    if (!statusCode) throw Error;
+
+    await deleteFile(imageId);
+
+    return { status: "Ok" };
+  } catch (error) {
+    console.log(error);
+  }
+}

@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
-import { FileUploader} from "../shared";
+import { FileUploader, Loader} from "../shared";
 import { useNavigate } from "react-router-dom";
 import { PostValidation } from "@/lib/validation";
 import { Models } from "appwrite";
@@ -176,10 +176,10 @@ const PostForm = ({ post, action }: PostFormProps) => {
           <Button
             type="submit"
             className="shad-button_primary whitespace-nowrap"
-            // disabled={isLoadingCreate || isLoadingUpdate}
+            disabled={isLoadingCreate || isLoadingUpdate}
           >
-            {/* {(isLoadingCreate || isLoadingUpdate) && <Loader />} */}
-            {/* action */} Post
+            {(isLoadingCreate || isLoadingUpdate) && <Loader />}
+              {action} Post
           </Button>
         </div>
       </form>
