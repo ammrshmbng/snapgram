@@ -1,3 +1,4 @@
+import { multiFormatDateString } from "@/lib/utils";
 import { Models } from "appwrite";
 import { Link } from "react-router-dom";
 
@@ -21,6 +22,21 @@ const PostCard = ({ post }: PostCardProps) => {
               className="w-12 rounded-full lg:h-12"
             />
           </Link>
+
+          <div className="flex flex-col">
+            <p className="base-medium lg:body-bold text-light-1">
+              {post.creator.name}
+            </p>
+            <div className="gap-2 flex-center text-light-3">
+              <p className="subtle-semibold lg:small-regular ">
+                {multiFormatDateString(post.$createdAt)}
+              </p>
+              •
+              <p className="subtle-semibold lg:small-regular">
+                {post.location}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
