@@ -4,6 +4,8 @@ import { Input } from "@/components/ui";
 import useDebounce from "@/hooks/useDebounce";
 import { useGetPosts, useSearchPosts } from "@/lib/react-query/queries";
 import { useState } from "react";
+import { useInView } from "react-intersection-observer";
+
 
 
 export type SearchResultProps = {
@@ -24,6 +26,8 @@ const SearchResults = ({ isSearchFetching, searchedPosts }: SearchResultProps) =
 };
 
 const Explore = () => {
+  const { ref, inView } = useInView();
+
   const [searchValue, setSearchValue] = useState("");
   const debouncedSearch = useDebounce(searchValue, 500);
   const { data: posts, fetchNextPage, hasNextPage } = useGetPosts();
@@ -88,6 +92,12 @@ const Explore = () => {
           ))
         )}
       </div>
+
+      {hasNextPage && !searchValue && (
+        <div ref={ref} className="mt-10">
+          <Loader />
+        </div>
+      )}
     </div>
   );
 };
