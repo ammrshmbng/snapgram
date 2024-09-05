@@ -2,7 +2,7 @@ import { Loader } from "@/components/shared";
 import PostStats from "@/components/shared/PostStats";
 import { Button } from "@/components/ui";
 import { useUserContext } from "@/context/AuthContext";
-import { useGetPostById } from "@/lib/react-query/queries";
+import {  useDeletePost, useGetPostById } from "@/lib/react-query/queries";
 import { multiFormatDateString } from "@/lib/utils";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
@@ -14,6 +14,12 @@ const PostDetails = () => {
 
 
   const { data: post, isPending: isLoading } = useGetPostById(id);
+  const { mutate: deletePost } = useDeletePost();
+
+  const handleDeletePost = () => {
+    deletePost({ postId: id, imageId: post?.imageId });
+    navigate(-1);
+  };
 
   return (
     <div className="post_details-container">
@@ -84,7 +90,7 @@ const PostDetails = () => {
                 </Link>
 
                 <Button
-                  onClick={()=>{}}
+                  onClick={handleDeletePost}
                   variant="ghost"
                   className={`ost_details-delete_btn ${
                     user.id !== post?.creator.$id && "hidden"
@@ -121,6 +127,20 @@ const PostDetails = () => {
         </div>
       )}
         
+
+        {/* <div className="w-full max-w-5xl">
+        <hr className="w-full border border-dark-4/80" />
+
+        <h3 className="w-full my-10 body-bold md:h3-bold">
+          More Related Posts
+        </h3>
+        {isUserPostLoading || !relatedPosts ? (
+          <Loader />
+        ) : (
+          <GridPostList posts={relatedPosts} />
+        )}
+      </div> */}
+
     </div>
   );
 };
