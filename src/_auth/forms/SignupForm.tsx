@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -15,8 +14,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SignupValidation } from "@/lib/validation";
+import { Loader } from "@/components/shared";
 
 const SignupForm = () => {
+  const isLoading = false;
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
@@ -78,7 +80,7 @@ const SignupForm = () => {
             )}
           />
 
-<FormField
+          <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
@@ -105,7 +107,16 @@ const SignupForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+
+          <Button type="submit" className="shad-button_primary">
+          {isLoading ? (
+              <div className="gap-2 flex-center">
+                <Loader /> Loading...
+              </div>
+            ) : (
+              "Sign Up"
+            )}
+          </Button>
         </form>
       </div>
     </Form>
