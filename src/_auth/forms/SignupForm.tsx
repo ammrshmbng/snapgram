@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { SignupValidation } from "@/lib/validation";
 import { Loader } from "@/components/shared";
+import { Link } from "react-router-dom";
 
 const SignupForm = () => {
   const isLoading = false;
@@ -109,7 +110,7 @@ const SignupForm = () => {
           />
 
           <Button type="submit" className="shad-button_primary">
-          {isLoading ? (
+            {isLoading ? (
               <div className="gap-2 flex-center">
                 <Loader /> Loading...
               </div>
@@ -117,6 +118,15 @@ const SignupForm = () => {
               "Sign Up"
             )}
           </Button>
+          <p className="mt-2 text-center text-small-regular text-light-2">
+            Already have an account?
+            <Link
+              to="/sign-in"
+              className="ml-1 text-primary-500 text-small-semibold"
+            >
+              Log in
+            </Link>
+          </p>
         </form>
       </div>
     </Form>
