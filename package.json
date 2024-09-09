@@ -13,6 +13,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.1",
     "add": "^2.0.6",
     "appwrite": "^13.0.2",
     "class-variance-authority": "^0.7.0",

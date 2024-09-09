@@ -36,7 +36,11 @@ const SignupForm = () => {
   async function onSubmit(values: z.infer<typeof SignupValidation>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    const newUser = await createUserAccount(values)
+    const newUser = await createUserAccount(values);
+
+    if (!newUser) {
+      return;
+    }
   }
 
   return (
