@@ -21,7 +21,7 @@ import { Models } from "appwrite";
 import { PostValidation } from "@/lib/validation";
 import { useUserContext } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { useCreatePost } from "@/lib/react-query/queries";
+import { useCreatePost, useUpdatePost } from "@/lib/react-query/queries";
 import { Loader } from "../shared";
 
 type PostFormProps = {
@@ -35,6 +35,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
 
   // Query
   const { mutateAsync: createPost, isPending: isLoadingCreate } = useCreatePost();
+  const { mutateAsync: updatePost, isPending: isLoadingUpdate } = useUpdatePost();
 
   const navigate = useNavigate();
   // 1. Define your form.
@@ -51,7 +52,23 @@ const PostForm = ({ post, action }: PostFormProps) => {
   // 2. Define a submit handler.
  async  function onSubmit(values: z.infer<typeof PostValidation>) {
     try {
+      
+       // ACTION = UPDATE
+    if (post && action === "Update") {
+      const updatedPost = await updatePost({
+        ...values,
+        postId: post.$id,
+        imageId: post.imageId,
+        imageUrl: post.imageUrl,
+      });
 
+      if (!updatedPost) {
+        toast({
+          title: `${action} post failed. Please try again.`,
+        });
+      }
+      return navigate(`/posts/${post.$id}`);
+    }
 
       const newPost = await createPost({
         ...values,
@@ -159,8 +176,8 @@ const PostForm = ({ post, action }: PostFormProps) => {
           <Button
             type="submit"
             className="shad-button_primary whitespace-nowrap"
-            disabled={isLoadingCreate }>
-            {isLoadingCreate && <Loader />}
+            disabled={isLoadingCreate || isLoadingUpdate }>
+            {(isLoadingCreate || isLoadingUpdate) && <Loader />}
             {action}
           </Button>
         </div>
