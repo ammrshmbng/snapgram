@@ -144,7 +144,7 @@
 
   .custom-scrollbar::-webkit-scrollbar {
     width: 3px;
-    height: 3px;
+    height: 0px;
     border-radius: 2px;
   }
 
