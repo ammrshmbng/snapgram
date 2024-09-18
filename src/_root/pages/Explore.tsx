@@ -92,12 +92,14 @@ const Explore = () => {
             isSearchFetching={isSearchFetching}
             searchedPosts={searchedPosts}
           />
-        ) : shouldShowPosts ? (
-          <p className="w-full mt-10 text-center text-light-4">End of posts</p>
         ) : (
           posts.pages.map((item, index) => (
             <GridPostList key={`page-${index}`} posts={item.documents} />
           ))
+        )}
+
+        {posts.pages[posts.pages.length - 1].documents.length === 0 && (
+          <p className="w-full mt-10 text-center text-light-4">End of posts</p>
         )}
       </div>
 
