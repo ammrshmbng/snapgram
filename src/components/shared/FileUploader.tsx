@@ -1,7 +1,8 @@
-import { useCallback, useState } from "react";
-import { FileWithPath, useDropzone } from "react-dropzone";
-import { Button } from "../ui";
-import { convertFileToUrl } from "@/lib/utils";
+import React, {useCallback, useState} from 'react'
+import {FileWithPath, useDropzone} from 'react-dropzone'
+import { Button } from '../ui/button';
+import { convertFileToUrl } from '@/lib/utils';
+
 
 type FileUploaderProps = {
   fieldChange: (files: File[]) => void;
@@ -12,27 +13,28 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
   const [file, setFile] = useState<File[]>([]);
   const [fileUrl, setFileUrl] = useState<string>(mediaUrl);
 
-  const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
+
+  const onDrop = useCallback((acceptedFiles: FileWithPath[])  => {
     // Do something with the files
     setFile(acceptedFiles);
       fieldChange(acceptedFiles);
       setFileUrl(convertFileToUrl(acceptedFiles[0]));
-  }, [file]);
-  
-  const { getRootProps, getInputProps } = useDropzone({
+  }, [])
+  const {getRootProps, getInputProps} = useDropzone({
     onDrop,
     accept: {
       "image/*": [".png", ".jpeg", ".jpg"],
     },
-  });
+  })
 
   return (
-    <div
-      {...getRootProps()}
+    <div {...getRootProps()}
       className="flex flex-col cursor-pointer flex-center bg-dark-3 rounded-xl"
     >
-      <input {...getInputProps()} className="cursor-pointer" />
-      {fileUrl ? (
+      <input {...getInputProps()} 
+        className="cursor-pointer"
+      />
+     {fileUrl ? (
         <>
           <div className="flex justify-center flex-1 w-full p-5 lg:p-10">
             <img src={fileUrl} alt="image" className="file_uploader-img" />
@@ -59,7 +61,7 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default FileUploader;
+export default FileUploader

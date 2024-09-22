@@ -23,18 +23,17 @@ const INITIAL_STATE = {
 
 const AuthContext = createContext<IContextType>(INITIAL_STATE);
 
-const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<IUser>(INITIAL_USER);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
-  
   const checkAuthUser = async () => {
     setIsLoading(true);
     try {
       const currentAccount = await getCurrentUser();
-      if (currentAccount) {
+      if (currentAccount?.$id) {
         setUser({
           id: currentAccount.$id,
           name: currentAccount.name,
@@ -44,10 +43,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           bio: currentAccount.bio,
         });
         setIsAuthenticated(true);
-        
+
         return true;
       }
-      
+
       return false;
     } catch (error) {
       console.error(error);
@@ -56,19 +55,16 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     const cookieFallback = localStorage.getItem("cookieFallback");
-    if (
-      cookieFallback === "[]" ||
-      cookieFallback === null 
-    ) {
+    if (cookieFallback === "[]" || cookieFallback === null) {
       navigate("/sign-in");
     }
 
     checkAuthUser();
   }, []);
-  
+
   const value = {
     user,
     setUser,
@@ -78,12 +74,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     checkAuthUser,
   };
 
-  return (
-    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-  );
-};
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
 
 export default AuthProvider;
 
 export const useUserContext = () => useContext(AuthContext);
-

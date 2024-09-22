@@ -18,7 +18,7 @@ const EditPost = () => {
   return (
     <div className="flex flex-1">
       <div className="common-container">
-        <div className="justify-start w-full max-w-5xl gap-3 flex-start">
+        <div className="w-full max-w-5xl gap-3  flex-start">
           <img
             src="/assets/icons/edit.svg"
             width={36}
@@ -36,3 +36,4 @@ const EditPost = () => {
 };
 
 export default EditPost;
+2

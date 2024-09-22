@@ -1,6 +1,9 @@
+"use client";
+
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -10,13 +13,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
-import { SigninValidation } from "@/lib/validation";
-import Loader from "@/components/shared/Loader";
+import { SigninValidation} from "@/lib/validation";
+import { Loader } from "@/components/shared";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { useSignInAccount } from "@/lib/react-query/queries";
+import {
+  useSignInAccount,
+} from "@/lib/react-query/queries";
 import { useUserContext } from "@/context/AuthContext";
 
 const SigninForm = () => {
@@ -24,7 +27,9 @@ const SigninForm = () => {
   const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
   const navigate = useNavigate();
 
-  const { mutateAsync: signInAccount} =
+  // Queries
+
+  const { mutateAsync: signInAccount, isPending: isSigningInUser } =
     useSignInAccount();
 
   // 1. Define your form.
@@ -37,49 +42,61 @@ const SigninForm = () => {
   });
 
   // 2. Define a submit handler.
-  async function onSubmit(value: z.infer<typeof SigninValidation>) {
-    
-    const session = await signInAccount({
-      email: value.email,
-      password: value.password,
-    });
+  async function onSubmit(values: z.infer<typeof SigninValidation>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    try {
+      
 
-    
-
-    if (!session) {
-      toast({ title: "Login failed. Please try again." });
-      return;
-    }
-
-    const isLoggedIn = await checkAuthUser();
-
-    if (isLoggedIn) {
-      form.reset();
+      const session = await signInAccount({
+        email: values.email,
+        password: values.password,
+      });
 
 
-      navigate("/");
-    } else {
-      toast({ title: "Login failed. Please try again." });
+      if (!session) {
+        return toast({
+          title: "Something went wrong. Please login your new account",
+        });
+      }
 
-      return;
+      
+      const isLoggedIn = await checkAuthUser();
+      console.log(isLoggedIn)
+
+      if (isLoggedIn) {
+        form.reset();
+
+        navigate("/");
+      } else {
+        toast({ title: "Login failed. Please try again.", });
+        
+        return;
+      }
+
+
+    } catch (error) {
+      console.log(error);
     }
   }
 
   return (
     <Form {...form}>
-      <div className="flex-col sm:w-420 flex-center">
+      <div className="flex-col sm:w-420 flex-center ">
         <img src="/assets/images/logo.svg" alt="logo" />
-        <h2 className="pt-5 h3-bold md:h2-bold sm:pt-12">
-          Log in to your account
+        <h2 className="pt-5 h3-bold md:h2-bold sm:pt-12 ">
+        Log in to your account
         </h2>
         <p className="mt-2 text-light-3 small-medium md:base-regular">
-          Welcome back! Please enter your details.
+          To use snapgram, Please enter your details
         </p>
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col w-full gap-5 mt-4"
         >
+          
+
           <FormField
             control={form.control}
             name="email"
@@ -109,20 +126,19 @@ const SigninForm = () => {
           />
 
           <Button type="submit" className="shad-button_primary">
-            {isUserLoading ? (
+            { isUserLoading || isSigningInUser ? (
               <div className="gap-2 flex-center">
                 <Loader /> Loading...
               </div>
             ) : (
-              "Sign in"
+              "Sign In"
             )}
           </Button>
           <p className="mt-2 text-center text-small-regular text-light-2">
-          Don&apos;t have an account?
+            Don&apos;t have an account?
             <Link
               to="/sign-up"
-              className="ml-1 text-primary-500 text-small-semibold"
-            >
+              className="ml-1 text-primary-500 text-small-semibold">
               Sign up
             </Link>
           </p>

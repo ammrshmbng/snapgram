@@ -1,6 +1,9 @@
+"use client";
+
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -10,10 +13,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
 import { SignupValidation } from "@/lib/validation";
-import Loader from "@/components/shared/Loader";
+import { Loader } from "@/components/shared";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -24,13 +25,13 @@ import { useUserContext } from "@/context/AuthContext";
 
 const SignupForm = () => {
   const { toast } = useToast();
-  const { checkAuthUser} = useUserContext();
+  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
   const navigate = useNavigate();
 
-
-  const { mutateAsync: createUserAccount, isPending: isCreatingAccount } =
+  // Queries
+  const { mutateAsync: createUserAccount, isPending: isCreatingUser } =
     useCreateUserAccount();
-  const { mutateAsync: signInAccount } =
+  const { mutateAsync: signInAccount, isPending: isSigningInUser } =
     useSignInAccount();
 
   // 1. Define your form.
@@ -45,44 +46,49 @@ const SignupForm = () => {
   });
 
   // 2. Define a submit handler.
-  async function onSubmit(value: z.infer<typeof SignupValidation>) {
-    const newUser = await createUserAccount(value);
+  async function onSubmit(values: z.infer<typeof SignupValidation>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    try {
+      const newUser = await createUserAccount(values);
+      if (!newUser) {
+        return toast({ title: "Sign up failed. Please try again." });
+      }
 
-    if (!newUser) {
-      toast({ title: "Sign up failed. Please try again." });
+      const session = await signInAccount({
+        email: values.email,
+        password: values.password,
+      });
 
-      return;
-    }
+      if (!session) {
+        return toast({
+          title: "Something went wrong. Please login your new account",
+        });
+      }
 
-    const session = await signInAccount({
-      email: value.email,
-      password: value.password,
-    });
+      
+      const isLoggedIn = await checkAuthUser();
+      if (isLoggedIn) {
+        form.reset();
 
-console.log(session)
-    if (!session) {
-      toast({ title: "Something went wrong. Please login your new account" });
-      return;
-    }
+        navigate("/");
+      } else {
+        toast({ title: "Login failed. Please try again.", });
+        
+        return;
+      }
 
-    const isLoggedIn = await checkAuthUser();
 
-    if (isLoggedIn) {
-      form.reset();
-
-      navigate("/");
-    } else {
-      toast({ title: "Login failed. Please try again." });
-
-      return;
+    } catch (error) {
+      console.log(error);
     }
   }
 
   return (
     <Form {...form}>
-      <div className="flex-col sm:w-420 flex-center">
+      <div className="flex-col sm:w-420 flex-center ">
         <img src="/assets/images/logo.svg" alt="logo" />
-        <h2 className="pt-5 h3-bold md:h2-bold sm:pt-12">
+        <h2 className="pt-5 h3-bold md:h2-bold sm:pt-12 ">
           Create a new account
         </h2>
         <p className="mt-2 text-light-3 small-medium md:base-regular">
@@ -150,12 +156,12 @@ console.log(session)
           />
 
           <Button type="submit" className="shad-button_primary">
-            {isCreatingAccount ? (
+            {isCreatingUser || isUserLoading || isSigningInUser ? (
               <div className="gap-2 flex-center">
                 <Loader /> Loading...
               </div>
             ) : (
-              "Sign up"
+              "Sign Up"
             )}
           </Button>
           <p className="mt-2 text-center text-small-regular text-light-2">
