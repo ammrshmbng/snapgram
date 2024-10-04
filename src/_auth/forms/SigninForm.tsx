@@ -20,7 +20,8 @@ import { useToast } from "@/hooks/use-toast";
 import {
   useSignInAccount,
 } from "@/lib/react-query/queries";
-import { useUserContext } from "@/context/AuthContext";
+import { useUserContext } from "@/context/useUserContext";
+// import { useUserContext } from "@/context/AuthContext";
 
 const SigninForm = () => {
   const { toast } = useToast();
@@ -53,7 +54,6 @@ const SigninForm = () => {
         password: values.password,
       });
 
-
       if (!session) {
         return toast({
           title: "Something went wrong. Please login your new account",
@@ -62,7 +62,6 @@ const SigninForm = () => {
 
       
       const isLoggedIn = await checkAuthUser();
-      console.log(isLoggedIn)
 
       if (isLoggedIn) {
         form.reset();
@@ -84,7 +83,7 @@ const SigninForm = () => {
     <Form {...form}>
       <div className="flex-col sm:w-420 flex-center ">
         <img src="/assets/images/logo.svg" alt="logo" />
-        <h2 className="pt-5 h3-bold md:h2-bold sm:pt-12 ">
+        <h2 className="pt-5 h3-bold md:h2-bold sm:pt-8 ">
         Log in to your account
         </h2>
         <p className="mt-2 text-light-3 small-medium md:base-regular">
@@ -126,7 +125,7 @@ const SigninForm = () => {
           />
 
           <Button type="submit" className="shad-button_primary">
-            { isUserLoading || isSigningInUser ? (
+            { isUserLoading || isSigningInUser  ? (
               <div className="gap-2 flex-center">
                 <Loader /> Loading...
               </div>

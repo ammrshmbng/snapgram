@@ -12,29 +12,21 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { SignupValidation } from "@/lib/validation";
-import { Loader } from "@/components/shared";
+import { Input } from "@/components/ui/input";
+import { Loader } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
-import {
-  useCreateUserAccount,
-  useSignInAccount,
-} from "@/lib/react-query/queries";
-import { useUserContext } from "@/context/AuthContext";
+import { useCreateUserAccount } from "@/lib/react-query/queries";
+import { toast } from "@/hooks/use-toast";
 
 const SignupForm = () => {
-  const { toast } = useToast();
-  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
-  const navigate = useNavigate();
+  const isUserLoading = false;
+  const navigate = useNavigate(); // Menambahkan variabel ini
 
   // Queries
   const { mutateAsync: createUserAccount, isPending: isCreatingUser } =
     useCreateUserAccount();
-  const { mutateAsync: signInAccount, isPending: isSigningInUser } =
-    useSignInAccount();
 
-  // 1. Define your form.
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
     defaultValues: {
@@ -42,45 +34,28 @@ const SignupForm = () => {
       username: "",
       email: "",
       password: "",
+      passwordRepeat: "",
     },
   });
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof SignupValidation>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     try {
       const newUser = await createUserAccount(values);
+
       if (!newUser) {
         return toast({ title: "Sign up failed. Please try again." });
+      } else if (newUser?.response?.data.code == 409) {
+        return toast({ title: newUser?.response?.data.message });
       }
 
-      const session = await signInAccount({
-        email: values.email,
-        password: values.password,
-      });
-
-      if (!session) {
-        return toast({
-          title: "Something went wrong. Please login your new account",
-        });
-      }
-
-      
-      const isLoggedIn = await checkAuthUser();
-      if (isLoggedIn) {
-        form.reset();
-
-        navigate("/");
-      } else {
-        toast({ title: "Login failed. Please try again.", });
-        
-        return;
+      if(newUser?.status === 'OK'){
+        navigate('/sign-in')
       }
 
 
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -88,7 +63,7 @@ const SignupForm = () => {
     <Form {...form}>
       <div className="flex-col sm:w-420 flex-center ">
         <img src="/assets/images/logo.svg" alt="logo" />
-        <h2 className="pt-5 h3-bold md:h2-bold sm:pt-12 ">
+        <h2 className="pt-2 h3-bold md:h2-bold sm:pt-4 ">
           Create a new account
         </h2>
         <p className="mt-2 text-light-3 small-medium md:base-regular">
@@ -155,8 +130,24 @@ const SignupForm = () => {
             )}
           />
 
+          <FormField
+            control={form.control}
+            name="passwordRepeat" // Menambahkan field baru
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="shad-form_label">
+                  Confirm Password
+                </FormLabel>
+                <FormControl>
+                  <Input type="password" className="shad-input" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <Button type="submit" className="shad-button_primary">
-            {isCreatingUser || isUserLoading || isSigningInUser ? (
+            {isCreatingUser || isUserLoading ? (
               <div className="gap-2 flex-center">
                 <Loader /> Loading...
               </div>

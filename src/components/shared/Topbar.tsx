@@ -1,19 +1,19 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import { Button } from "../ui/button";
+import { useUserContext } from "@/context/useUserContext";
 import { useSignOutAccount } from "@/lib/react-query/queries";
 import { useEffect } from "react";
-import { useUserContext } from "@/context/AuthContext";
 
 
 const Topbar = () => {
-  const navigate = useNavigate();
   const { user } = useUserContext();
-  const { mutate: signOut, isSuccess } = useSignOutAccount();
+  const navigate = useNavigate();
 
+  const { mutate: signOut, isSuccess } = useSignOutAccount();
+ 
   useEffect(() => {
     if (isSuccess) navigate(0);
-  }, [isSuccess]);
-
+  }, [isSuccess, navigate]);
 
   return (
     <section className="topbar">
@@ -36,7 +36,7 @@ const Topbar = () => {
           </Button>
           <Link to={`/profile/${user.id}`} className="gap-3 flex-center">
             <img
-              src={user.imageUrl ||  "/assets/icons/profile-placeholder.svg"}
+              src={user.profilePictureUrl ||  "/assets/icons/profile-placeholder.svg"}
               alt="profile"
               className="w-8 h-8 rounded-full"
             />

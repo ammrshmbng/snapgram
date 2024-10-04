@@ -1,11 +1,11 @@
-import { Models } from "appwrite";
 import { Link } from "react-router-dom";
 
 import { PostStats } from "@/components/shared";
-import { useUserContext } from "@/context/AuthContext";
+import { useUserContext } from "@/context/useUserContext";
+import { PostElement } from "@/types";
 
 type GridPostListProps = {
-  posts: Models.Document[];
+  posts: PostElement[];
   showUser?: boolean;
   showStats?: boolean;
 };
@@ -19,28 +19,28 @@ const GridPostList = ({
 
   return (
     <ul className="grid-container">
-      {posts.map((post) => (
-        <li key={post.$id} className="relative min-w-80 h-80">
-          <Link to={`/posts/${post.$id}`} className="grid-post_link">
+      {posts?.map((post) => (
+        <li key={post.id} className="relative min-w-80 h-80">
+          <Link to={`/posts/${post.id}`} className="grid-post_link">
             <img
-              src={post.imageUrl}
+              src={post.imageUrl || "/assets/icons/post-placeholder.svg"}
               alt="post"
-              className="h-full w-full object-cover"
+              className="object-cover w-full h-full"
             />
           </Link>
 
           <div className="grid-post_user">
             {showUser && (
-              <div className="flex items-center justify-start gap-2 flex-1">
+              <div className="flex items-center justify-start flex-1 gap-2">
                 <img
                   src={
-                    post.creator.imageUrl ||
+                    post.user?.profilePictureUrl ||
                     "/assets/icons/profile-placeholder.svg"
                   }
                   alt="creator"
                   className="w-8 h-8 rounded-full"
                 />
-                <p className="line-clamp-1">{post.creator.name}</p>
+                <p className="line-clamp-1">{post.user?.username}</p>
               </div>
             )}
             {showStats && <PostStats post={post} userId={user.id} />}

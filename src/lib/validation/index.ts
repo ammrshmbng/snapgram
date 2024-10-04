@@ -5,6 +5,13 @@ export const SignupValidation = z.object({
     username: z.string().min(2, { message: "Name must be at least 2 characters." }),
     email: z.string().email(),
     password: z.string().min(8, { message: "Password must be at least 8 characters." }),
+    passwordRepeat: z.string().min(8, { message: "Password must be at least 8 characters." }) // Menambahkan validasi untuk konfirmasi password
+    .refine((val) => {
+      // Menggunakan 'this' untuk mengakses konteks
+      const password = (this as unknown as { parent: { password: string } })?.parent.password; 
+      return val !== password; // Memastikan nilai sama dengan password
+    }, { message: "Passwords must match." }) // Menambahkan pesan kesalahan
+
   });
 
   export const SigninValidation = z.object({
@@ -18,9 +25,8 @@ export const SignupValidation = z.object({
 // ============================================================
 export const PostValidation = z.object({
   caption: z.string().min(5, { message: "Minimum 5 characters." }).max(2200, { message: "Maximum 2,200 caracters" }),
+  // imageUrl: z.string().url({ message: "Must be a valid URL" }).max(1000, { message: "Maximum 1000 characters." }).optional(),
   file: z.custom<File[]>(),
-  location: z.string().min(1, { message: "This field is required" }).max(1000, { message: "Maximum 1000 characters." }),
-  tags: z.string(),
 });
 
 
@@ -30,4 +36,5 @@ export const ProfileValidation = z.object({
   username: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email(),
   bio: z.string(),
+  phoneNumber: z.string().optional(),
 });

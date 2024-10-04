@@ -1,19 +1,23 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
+import { QueryProvider } from "./lib/react-query/QueryProvider.tsx";
+import App from "./App.tsx";
+import "./index.css";
+import AuthProvider from "./context/AuthContext.tsx";
 
-import App from "./App";
-import AuthProvider from "./context/AuthContext";
-import { QueryProvider } from "./lib/react-query/QueryProvider";
-
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
     <BrowserRouter>
+    <Provider store={store}>
       <QueryProvider>
         <AuthProvider>
           <App />
         </AuthProvider>
       </QueryProvider>
+      </Provider>
     </BrowserRouter>
-  </React.StrictMode>
+  </StrictMode>
 );

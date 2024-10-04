@@ -1,11 +1,11 @@
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import { INavLink } from "@/types";
-import { sidebarLinks } from "@/constants";
+import { INITIAL_USER, sidebarLinks } from "@/constants";
 import { Loader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { useSignOutAccount } from "@/lib/react-query/queries";
-import { useUserContext, INITIAL_USER } from "@/context/AuthContext";
+import { useUserContext } from "@/context/useUserContext";
 
 const LeftSidebar = () => {
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ const LeftSidebar = () => {
         ) : (
           <Link to={`/profile/${user.id}`} className="flex items-center gap-3">
             <img
-              src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
+              src={user.profilePictureUrl || "/assets/icons/profile-placeholder.svg"}
               alt="profile"
               className="rounded-full h-14 w-14"
             />

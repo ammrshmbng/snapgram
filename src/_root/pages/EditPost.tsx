@@ -6,8 +6,7 @@ import { useGetPostById } from "@/lib/react-query/queries";
 
 const EditPost = () => {
   const { id } = useParams();
-  const { data: post, isLoading } = useGetPostById(id);
-
+  const { data: post , isLoading } = useGetPostById(id) as any  ;
   if (isLoading)
     return (
       <div className="w-full h-full flex-center">
@@ -18,7 +17,7 @@ const EditPost = () => {
   return (
     <div className="flex flex-1">
       <div className="common-container">
-        <div className="w-full max-w-5xl gap-3  flex-start">
+        <div className="w-full max-w-5xl gap-3 flex-start">
           <img
             src="/assets/icons/edit.svg"
             width={36}
@@ -29,11 +28,10 @@ const EditPost = () => {
           <h2 className="w-full text-left h3-bold md:h2-bold">Edit Post</h2>
         </div>
 
-        {isLoading ? <Loader /> : <PostForm action="Update" post={post} />}
+        {isLoading ? <Loader /> : <PostForm action="Update" post={post?.data.data} />}
       </div>
     </div>
   );
 };
 
 export default EditPost;
-2
