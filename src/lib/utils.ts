@@ -1,5 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { formatDistanceToNow, parseISO } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -8,21 +10,8 @@ export function cn(...inputs: ClassValue[]) {
 export const convertFileToUrl = (file: File) => URL.createObjectURL(file);
 
 export function formatDateString(dateString: string) {
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  };
-
-  const date = new Date(dateString);
-  const formattedDate = date.toLocaleDateString("en-US", options);
-
-  const time = date.toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
-  });
-
-  return `${formattedDate} at ${time}`;
+  const date = parseISO(dateString);
+  return formatDistanceToNow(date, { addSuffix: true, locale: enUS });
 }
 
 // 
