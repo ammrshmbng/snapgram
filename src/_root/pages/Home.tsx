@@ -7,7 +7,6 @@ import { useGetPosts } from "@/lib/react-query/queries";
 
 const Home = () => {
   const { data: posts, fetchNextPage, hasNextPage } = useGetPosts() as any;
-  console.log(posts)
 const { ref, inView } = useInView();
 
 useEffect(() => {

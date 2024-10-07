@@ -56,3 +56,27 @@ export const multiFormatDateString = (timestamp: string  = ""): string => {
 export const checkIsLiked = (likeList: string[], userId: string) => {
   return likeList.includes(userId);
 };
+
+export const urlValidation = (url: any): Promise<any> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    
+    img.onload = () => {
+      resolve(url);
+    };
+    
+    img.onerror = () => {
+      resolve(false);
+    };
+    
+    img.src = url;
+  });
+};
+
+
+
+
+
+
+
+

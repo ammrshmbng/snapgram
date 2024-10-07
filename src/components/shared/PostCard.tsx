@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 import { PostElement } from "@/types";
 import { useUserContext } from "@/context/useUserContext";
 import { multiFormatDateString } from "@/lib/utils";
-import {PostStats} from "./";
+import {PostComment, PostStats} from "./";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { useState } from "react";
 
 type PostCardProps = {
   post: PostElement;
@@ -12,16 +14,17 @@ type PostCardProps = {
 
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext();
-
+  const [totalLikes, setTotalLikes] = useState(post.totalLikes || 0);
 
   return (
-    <div className="post-card">
-      <div className="flex-between">
-        <div className="flex items-center gap-3">
+   <div className="post-card">
+     <Card className="w-full text-white bg-black border-none">
+      <CardHeader className="flex flex-row items-center gap-4 p-4">
+      <div className="flex items-center gap-3">
           <Link to={`/profile/${post.userId}`}>
             <img
               src={
-                post.user?.profilePictureUrl ||
+                 post.user?.profilePictureUrl ||
                 "/assets/icons/profile-placeholder.svg"
               }
               alt="creator"
@@ -52,30 +55,29 @@ const PostCard = ({ post }: PostCardProps) => {
             height={20}
           />
         </Link>
-      </div>
+      </CardHeader>
+      <CardContent className="p-0">
+          <img
+             src={post.imageUrl || "https://via.placeholder.com/150"}
+             alt="post image"
+             className="post-card_img "
+            />
+      </CardContent>
+      <CardFooter className="flex flex-col items-start p-4">
+        {/* post stats */}
+        <PostStats post={post} userId={user.id} totalLikes={totalLikes} setTotalLikes={setTotalLikes} />
+        <p className="mb-2 font-semibold">{totalLikes} likes</p>
+        <p className="mb-2 text-sm">
+          <span className="font-semibold">muhammadrafi</span> Pengen ayam
+        </p>
+        {/* post comment */}
+        <PostComment postId={post.id} />
+      </CardFooter>
+    </Card>
+   </div>
+  )
 
-      <Link to={`/posts/${post.id}`}>
-        <div className="py-5 small-medium lg:base-medium">
-          <p>{post.caption}</p>
-          <ul className="flex gap-1 mt-2">
-            {/* {post.tags.map((tag: string, index: string) => (
-              <li key={`${tag}${index}`} className="text-light-3 small-regular">
-                #{tag}
-              </li>
-            ))} */}
-          </ul>
-        </div>
+}
 
-        <img
-          src={post.imageUrl || "/assets/icons/profile-placeholder.svg"}
-          alt="post image"
-          className="post-card_img"
-        />
-      </Link>
-
-      <PostStats post={post} userId={user.id} />
-    </div>
-  );
-};
 
 export default PostCard;

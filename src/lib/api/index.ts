@@ -390,3 +390,44 @@ export async function unfollowUser(userId: string) {
     console.log(error);
   }
 }
+
+export async function createComment(postId: string, comment: string) {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/api/v1/create-comment`,
+      { postId, comment },
+      {
+        headers: {
+          apiKey: API_KEY,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    if (!response.data) throw Error;
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function deleteComment(commentId: string) {
+  try {
+    const response = await axios.delete(
+      `${BASE_URL}/api/v1/delete-comment/${commentId}`,
+      {
+        headers: {
+          apiKey: API_KEY,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    if (!response.data) throw Error;
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}

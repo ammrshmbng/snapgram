@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui";
-import { Loader } from "@/components/shared";
+import { Loader, PostComment } from "@/components/shared";
 import { GridPostList, PostStats } from "@/components/shared";
 
 import { multiFormatDateString } from "@/lib/utils";
@@ -132,6 +132,7 @@ const PostDetails = () => {
 
             <div className="w-full">
               <PostStats post={post} userId={user.id} />
+              <PostComment postId={post.id} />
             </div>
           </div>
         </div>

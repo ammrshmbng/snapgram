@@ -132,14 +132,14 @@ const Profile = () => {
                 </p>
               </Link>
             </div>
-            <div className={`${myFollowingUsersId.includes(id) && "hidden"}`}>
+            <div className={`${myFollowingUsersId?.includes(id) && "hidden"}`}>
               <Button type="button" className="px-8 shad-button_primary"
                 onClick={handleFollowUser}
               >
                 Follow
               </Button>
             </div>
-            <div className={`${!myFollowingUsersId.includes(id) && "hidden"}`}>
+            <div className={`${!myFollowingUsersId?.includes(id) && "hidden"}`}>
               <Button type="button" className="px-8 shad-button_primary"
                 onClick={handleUnfollowUser}
               >
