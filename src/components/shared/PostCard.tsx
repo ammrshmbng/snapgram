@@ -1,12 +1,11 @@
-
 import { Link } from "react-router-dom";
 
 import { PostElement } from "@/types";
 import { useUserContext } from "@/context/useUserContext";
-import { multiFormatDateString } from "@/lib/utils";
+import { multiFormatDateString, urlValidation } from "@/lib/utils";
 import {PostComment, PostStats} from "./";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type PostCardProps = {
   post: PostElement;
@@ -15,6 +14,19 @@ type PostCardProps = {
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext();
   const [totalLikes, setTotalLikes] = useState(post.totalLikes || 0);
+  const [validImageUrl, setValidImageUrl] = useState<any>("https://via.placeholder.com/150");
+  const [validProfilePictureUrl, setValidProfilePictureUrl] = useState<any>("/assets/icons/profile-placeholder.svg");
+
+  useEffect(() => {
+    const validateImages = async () => {
+      const postImageResult = await urlValidation(post.imageUrl);
+      setValidImageUrl(postImageResult ? post.imageUrl : "https://via.placeholder.com/150");
+
+      const profilePictureResult = await urlValidation(post.user?.profilePictureUrl);
+      setValidProfilePictureUrl(profilePictureResult ? post.user?.profilePictureUrl : "/assets/icons/profile-placeholder.svg");
+    };
+    validateImages();
+  }, [post.imageUrl, post.user?.profilePictureUrl]);
 
   return (
    <div className="post-card">
@@ -23,10 +35,7 @@ const PostCard = ({ post }: PostCardProps) => {
       <div className="flex items-center gap-3">
           <Link to={`/profile/${post.userId}`}>
             <img
-              src={
-                 post.user?.profilePictureUrl ||
-                "/assets/icons/profile-placeholder.svg"
-              }
+              src={validProfilePictureUrl}
               alt="creator"
               className="w-12 rounded-full lg:h-12"
             />
@@ -58,7 +67,7 @@ const PostCard = ({ post }: PostCardProps) => {
       </CardHeader>
       <CardContent className="p-0">
           <img
-             src={post.imageUrl || "https://via.placeholder.com/150"}
+             src={validImageUrl}
              alt="post image"
              className="post-card_img "
             />

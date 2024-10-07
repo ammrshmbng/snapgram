@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { enUS } from 'date-fns/locale';
+import { validateImage } from "image-validator";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -46,20 +47,16 @@ export const checkIsLiked = (likeList: string[], userId: string) => {
   return likeList.includes(userId);
 };
 
-export const urlValidation = (url: any): Promise<any> => {
-  return new Promise((resolve) => {
-    const img = new Image();
-    
-    img.onload = () => {
-      resolve(url);
-    };
-    
-    img.onerror = () => {
-      resolve(false);
-    };
-    
-    img.src = url;
-  });
+export const urlValidation = async (url: any): Promise<any> => {
+  try {
+    const isValid = await validateImage(url, { throw: true });
+    if (isValid) {
+      return url;
+    }
+  } catch (error) {
+    console.error("Validasi gambar gagal:", error);
+  }
+  return false;
 };
 
 
