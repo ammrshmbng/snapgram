@@ -77,8 +77,9 @@ const PostStats = ({ post, totalLikes, setTotalLikes }: any) => {
 
     // hidden icon comment and send stats  for explore page
     const postDetailsPage = location.pathname.split("/")[1] === "posts"
+    const profilePage = location.pathname.split("/")[1] === "profile"
 
-  const hiddentIconStats = location.pathname.startsWith("/explore") || postDetailsPage ? "hidden" : "";
+  const hiddentIconStats = location.pathname.startsWith("/explore") || postDetailsPage || profilePage ? "hidden" : "";
   
   
   // disable full width for explore page
