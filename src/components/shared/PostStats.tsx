@@ -71,9 +71,7 @@ const PostStats = ({ post, totalLikes, setTotalLikes }: any) => {
    
   };
 
-  const containerStyles = location.pathname.startsWith("/profile")
-    ? "w-full"
-    : "";
+
 
     // hidden icon comment and send stats  for explore page
     const postDetailsPage = location.pathname.split("/")[1] === "posts"

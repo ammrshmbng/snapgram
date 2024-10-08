@@ -45,7 +45,7 @@ const Profile = () => {
   const { data: myFollowing, isLoading: isLoadingMyFollowing } =
     useGetMyFollowing();
   const myFollowingUsersId = myFollowing?.data.users.map((user: any) => user.id);
- 
+ console.log(myFollowingUsersId)
   // query to follow and unfollow
   const { mutateAsync: followUser, isPending: isLoadingFollow } = useFollowUser();
   const { mutateAsync: unfollowUser, isPending: isLoadingUnfollow } = useUnfollowUser();
@@ -132,7 +132,7 @@ const Profile = () => {
                 </p>
               </Link>
             </div>
-            <div className={`${myFollowingUsersId?.includes(id) && "hidden"}`}>
+            <div className={`${(myFollowingUsersId?.includes(id) || id === user.id) && "hidden"}`}>
               <Button type="button" className="px-8 shad-button_primary"
                 onClick={handleFollowUser}
               >
