@@ -36,5 +36,5 @@ export const ProfileValidation = z.object({
   username: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email(),
   bio: z.string(),
-  phoneNumber: z.string().optional(),
+  phoneNumber: z.string().regex(/^(\+62|62|0)8[1-9][0-9]{6,9}$/, { message: "Nomor telepon harus valid dan menggunakan format Indonesia" }).min(10, { message: "Nomor telepon minimal 10 digit" }).max(13, { message: "Nomor telepon maksimal 13 digit" }),
 });
