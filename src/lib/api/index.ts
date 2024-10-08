@@ -1,3 +1,4 @@
+/// <reference types="../../vite-env.d.ts" />
 import { INewPost, INewUser, IUpdatePost, IUser } from "@/types";
 import axios from "axios";
 const BASE_URL = import.meta.env.VITE_BASE_URL;

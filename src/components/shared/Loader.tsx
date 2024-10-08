@@ -3,6 +3,7 @@ const Loader = () => (
     <img
       src="/assets/icons/loader.svg"
       alt="loader"
+      data-testid="loader"
       width={24}
       height={24}
       className="animate-spin"
@@ -11,3 +12,4 @@ const Loader = () => (
 );
 
 export default Loader;
+
