@@ -9,9 +9,14 @@
     @apply box-border list-none p-0 m-0 scroll-smooth;
   }
 
+  
+
   body {
-    @apply bg-dark-1 text-white min-h-screen font-inter;
+    @apply  bg-white text-black dark:bg-dark-1 dark:text-white  min-h-screen font-inter;
+    
   }
+
+
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
@@ -272,7 +277,7 @@
 
   /* Left sidebar */
   .leftsidebar {
-    @apply hidden md:flex px-6 py-10 flex-col justify-between min-w-[270px] bg-dark-2;
+    @apply hidden md:flex px-6 py-10 flex-col justify-between min-w-[270px] bg-white dark:bg-dark-2;
   }
 
   .leftsidebar-link {

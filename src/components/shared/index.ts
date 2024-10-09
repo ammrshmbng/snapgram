@@ -8,6 +8,8 @@ export { default as GridPostList } from "./GridPostList";
 export { default as FileUploader } from "./FileUploader";
 export { default as ProfileUploader } from "./ProfileUploader";
 export { default as PostComment } from "./PostComment";
+export { default as ToggleDarkMode } from "./ToggleDarkMode";
+export { ThemeProvider } from "./theme-provider";
 // export { default as UserCard } from "./UserCard";
 
 

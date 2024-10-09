@@ -2,7 +2,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import { INavLink } from "@/types";
 import { INITIAL_USER, sidebarLinks } from "@/constants";
-import { Loader } from "@/components/shared";
+import { Loader, ToggleDarkMode } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { useSignOutAccount } from "@/lib/react-query/queries";
 import { useUserContext } from "@/context/useUserContext";
@@ -25,7 +25,7 @@ const LeftSidebar = () => {
   };
 
   return (
-    <nav className="leftsidebar">
+    <nav className=" leftsidebar">
       <div className="flex flex-col gap-11">
         <Link to="/" className="flex items-center gap-3">
           <img
@@ -33,6 +33,7 @@ const LeftSidebar = () => {
             alt="logo"
             width={170}
             height={36}
+            className="brightness-0 dark:invert"
           />
         </Link>
 
@@ -82,13 +83,29 @@ const LeftSidebar = () => {
         </ul>
       </div>
 
-      <Button
+
+      <div className="space-y-4">
+        <ToggleDarkMode />
+        <Button
         variant="ghost"
         className="shad-button_ghost"
         onClick={(e) => handleSignOut(e)}>
         <img src="/assets/icons/logout.svg" alt="logout" />
         <p className="small-medium lg:base-medium">Logout</p>
       </Button>
+          
+      </div>
+
+      {/* <Button
+        variant="ghost"
+        className="shad-button_ghost"
+        onClick={(e) => handleSignOut(e)}>
+        <img src="/assets/icons/logout.svg" alt="logout" />
+        <p className="small-medium lg:base-medium">Logout</p>
+      </Button> */}
+
+      
+
     </nav>
   );
 };
