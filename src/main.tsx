@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
+import { Analytics } from '@vercel/analytics/react'; // Impor Analytics
 import { store } from "./redux/store";
 import { QueryProvider } from "./lib/react-query/QueryProvider.tsx";
 import App from "./App.tsx";
@@ -16,6 +17,7 @@ createRoot(document.getElementById("root")!).render(
         <QueryProvider>
           <AuthProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <Analytics /> 
               <App />
             </ThemeProvider>
           </AuthProvider>
